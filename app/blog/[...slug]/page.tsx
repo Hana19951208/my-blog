@@ -13,6 +13,14 @@ import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+})
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -26,19 +34,29 @@ export async function generateMetadata(props: {
 }): Promise<Metadata | undefined> {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
-  const post = allBlogs.find((p) => p.slug === slug)
-  const authorList = post?.authors || ['default']
-  const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Authors)
-  })
+
+  // 1. Try local
+  let post: any = allBlogs.find((p) => p.slug === slug)
+
+  // 2. Try Supabase
   if (!post) {
-    return
+    const supabase = await createClient()
+    const { data } = await supabase.from('posts').select('*').eq('slug', slug).single()
+    if (data) {
+      post = {
+        title: data.title,
+        summary: data.summary,
+        date: data.created_at,
+        images: [],
+        authors: ['default'],
+      }
+    }
   }
 
+  if (!post) return
+
   const publishedAt = new Date(post.date).toISOString()
-  const modifiedAt = new Date(post.lastmod || post.date).toISOString()
-  const authors = authorDetails.map((author) => author.name)
+  const authors = [siteMetadata.author]
   let imageList = [siteMetadata.socialBanner]
   if (post.images) {
     imageList = typeof post.images === 'string' ? [post.images] : post.images
@@ -59,10 +77,9 @@ export async function generateMetadata(props: {
       locale: 'en_US',
       type: 'article',
       publishedTime: publishedAt,
-      modifiedTime: modifiedAt,
       url: './',
       images: ogImages,
-      authors: authors.length > 0 ? authors : [siteMetadata.author],
+      authors: authors,
     },
     twitter: {
       card: 'summary_large_image',
@@ -73,48 +90,79 @@ export async function generateMetadata(props: {
   }
 }
 
-export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
-}
-
 export default async function Page(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
-  // Filter out drafts in production
-  const sortedCoreContents = allCoreContent(sortPosts(allBlogs))
-  const postIndex = sortedCoreContents.findIndex((p) => p.slug === slug)
-  if (postIndex === -1) {
+
+  // 1. Check local first
+  const localPost = allBlogs.find((p) => p.slug === slug)
+  if (localPost) {
+    const sortedCoreContents = allCoreContent(sortPosts(allBlogs))
+    const postIndex = sortedCoreContents.findIndex((p) => p.slug === slug)
+    const prev = sortedCoreContents[postIndex + 1]
+    const next = sortedCoreContents[postIndex - 1]
+    const authorList = localPost?.authors || ['default']
+    const authorDetails = authorList.map((author) => {
+      const authorResults = allAuthors.find((p) => p.slug === author)
+      return coreContent(authorResults as Authors)
+    })
+    const mainContent = coreContent(localPost)
+    const Layout = layouts[localPost.layout || defaultLayout]
+
+    return (
+      <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
+        <MDXLayoutRenderer code={localPost.body.code} components={components} toc={localPost.toc} />
+      </Layout>
+    )
+  }
+
+  // 2. Check Supabase
+  const supabase = await createClient()
+  const { data: dbPost } = await supabase
+    .from('posts')
+    .select('*, profiles(username, avatar_url, email)')
+    .eq('slug', slug)
+    .single()
+
+  if (!dbPost) {
     return notFound()
   }
 
-  const prev = sortedCoreContents[postIndex + 1]
-  const next = sortedCoreContents[postIndex - 1]
-  const post = allBlogs.find((p) => p.slug === slug) as Blog
-  const authorList = post?.authors || ['default']
-  const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Authors)
-  })
-  const mainContent = coreContent(post)
-  const jsonLd = post.structuredData
-  jsonLd['author'] = authorDetails.map((author) => {
-    return {
-      '@type': 'Person',
-      name: author.name,
-    }
-  })
+  // Map to Layout structure
+  const mainContent = {
+    title: dbPost.title,
+    date: dbPost.created_at,
+    summary: dbPost.summary,
+    tags: dbPost.tags || [],
+    slug: dbPost.slug,
+    path: `blog/${dbPost.slug}`,
+    filePath: `supabase/${dbPost.slug}`,
+  }
 
-  const Layout = layouts[post.layout || defaultLayout]
+  const authorDetails = [
+    {
+      name: dbPost.profiles?.username || dbPost.profiles?.email || 'Author',
+      avatar: dbPost.profiles?.avatar_url || '/static/images/avatar.png',
+      occupation: 'Writer',
+    } as any,
+  ]
+
+  const renderedContent = md.render(dbPost.content || '')
+  const Layout = layouts[defaultLayout]
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    <Layout content={mainContent as any} authorDetails={authorDetails}>
+      <div
+        className="prose max-w-none pb-8 dark:prose-invert"
+        dangerouslySetInnerHTML={{ __html: renderedContent }}
       />
-      <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
-      </Layout>
-    </>
+    </Layout>
   )
 }
+
+
+
+
+
+
+

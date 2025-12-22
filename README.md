@@ -9,6 +9,8 @@
 - **后端**: Supabase Auth, Database (Postgres), Row Level Security (RLS)
 - **渲染**: MDX 支持，正在从静态 Contentlayer 迁移至 Supabase 动态数据驱动
 
+> 📖 **技术架构与学习指南**：如果你对本项目的代码结构、核心组件以及 Next.js + Supabase 的实现细节感兴趣，请阅读 [GUIDE.md](./GUIDE.md)。这可以帮助你从 Java 后端的视角快速理解前端架构。
+
 ## ✨ 已实现功能
 
 1. **用户认证 (Supabase Auth)**
@@ -44,9 +46,9 @@
 
 ## 🛠️ 后续规划
 
-- [ ] 实现 `/editor` 文章编辑器页面
-- [ ] 动态首页：从 Supabase 读取文章列表
-- [ ] 文章详情页：MDX 动态渲染
+- [x] 实现 `/editor` 文章编辑器页面 (Apple Style)
+- [x] 动态首页与列表：合并 Supabase 与本地 Markdown 文章
+- [x] 文章详情页：支持 MDX 动态渲染 (Supabase 数据驱动)
 - [ ] 部署至 Vercel
 
 ---
