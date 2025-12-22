@@ -9,7 +9,11 @@
 - **后端**: Supabase Auth, Database (Postgres), Row Level Security (RLS)
 - **渲染**: MDX 支持，正在从静态 Contentlayer 迁移至 Supabase 动态数据驱动
 
-> 📖 **技术架构与学习指南**：如果你对本项目的代码结构、核心组件以及 Next.js + Supabase 的实现细节感兴趣，请阅读 [GUIDE.md](./GUIDE.md)。这可以帮助你从 Java 后端的视角快速理解前端架构。
+- **渲染**: MDX 支持，正在从静态 Contentlayer 迁移至 Supabase 动态数据驱动
+
+> 📖 **学习指南**：
+> 1. [**技术架构指南 (GUIDE.md)**](./GUIDE.md)：了解代码结构与核心实现原理。
+> 2. [**个性化定制指南 (CUSTOMIZATION.md)**](./CUSTOMIZATION.md)：修改标题、作者、导航栏与配色。
 
 ## ✨ 已实现功能
 
