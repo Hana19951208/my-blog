@@ -153,16 +153,9 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
   return (
     <Layout content={mainContent as any} authorDetails={authorDetails}>
       <div
-        className="prose max-w-none pb-8 dark:prose-invert"
+        className="prose dark:prose-invert max-w-none pb-8"
         dangerouslySetInnerHTML={{ __html: renderedContent }}
       />
     </Layout>
   )
 }
-
-
-
-
-
-
-

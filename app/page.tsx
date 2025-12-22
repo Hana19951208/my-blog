@@ -11,7 +11,7 @@ export default async function Page() {
     .eq('published', true)
     .order('created_at', { ascending: false })
 
-  const mappedDbPosts = (dbPosts || []).map(post => ({
+  const mappedDbPosts = (dbPosts || []).map((post) => ({
     title: post.title,
     date: post.created_at,
     tags: post.tags || [],
@@ -22,10 +22,9 @@ export default async function Page() {
 
   const localPosts = allCoreContent(sortPosts(allBlogs))
 
-  const allMergedPosts: any = [...mappedDbPosts, ...localPosts].sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
+  const allMergedPosts: any = [...mappedDbPosts, ...localPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   )
 
   return <Main posts={allMergedPosts} />
 }
-

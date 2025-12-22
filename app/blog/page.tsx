@@ -19,7 +19,7 @@ export default async function BlogPage(props: { searchParams: Promise<{ page: st
     .order('created_at', { ascending: false })
 
   // 2. Map Supabase posts to the interface expected by ListLayout
-  const mappedDbPosts = (dbPosts || []).map(post => ({
+  const mappedDbPosts = (dbPosts || []).map((post) => ({
     title: post.title,
     date: post.created_at,
     tags: post.tags || [],
@@ -32,8 +32,8 @@ export default async function BlogPage(props: { searchParams: Promise<{ page: st
   const localPosts = allCoreContent(sortPosts(allBlogs))
 
   // 4. Merge and sort
-  const allMergedPosts: any[] = [...mappedDbPosts, ...localPosts].sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
+  const allMergedPosts: any[] = [...mappedDbPosts, ...localPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   )
 
   const pageNumber = 1
@@ -53,4 +53,3 @@ export default async function BlogPage(props: { searchParams: Promise<{ page: st
     />
   )
 }
-

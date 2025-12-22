@@ -7,7 +7,6 @@ import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
 import UserMenu from './UserMenu'
 
-
 const Header = () => {
   let headerClass = 'flex items-center w-full bg-white dark:bg-gray-950 justify-between py-10'
   if (siteMetadata.stickyNav) {
