@@ -1,47 +1,39 @@
-# My Personal Blog
+# Hana 的个人空间 (Hana's Personal Space)
 
-基于 [Tailwind Nextjs Starter Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) 改造的全栈个人博客系统，深度集成 **Supabase**。
+基于 [Tailwind Nextjs Starter Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) 改造的全栈个人博客系统，深度集成 **Supabase**，并采用 **Apple 风格** 的极简设计。
 
 ## 🎯 项目现状
 
-本项目已实现从静态博客向 **全栈动态架构** 的演进：
+本项目已由 Hana 完成基础初始化与个性化定制：
 
-- **前端**: Next.js (App Router), Tailwind CSS
-- **后端**: Supabase Auth, Database (Postgres)
-- **渲染**: 支持本地 MDX 与 Supabase 动态数据混合展示
+- **作者**: Hana
+- **风格**: 苹果风 (Apple Style) - 简约、大方、玻璃拟态
+- **语言**: 全面支持中文 UI
+- **架构**:
+  - **前端**: Next.js 15 (App Router), Tailwind CSS v4
+  - **后端**: Supabase Auth & Database (Postgres)
+  - **内容**: 支持本地 MDX 与 云端动态文章混合展示
+
+---
+
+## 🚀 核心改动
+
+1.  **视觉识别**:
+    - 自定义可爱猫咪 Logo (`data/logo.svg`)。
+    - 注入 Apple 精益设计：`#F5F5F7` 背景色、`glass` 玻璃效果、平滑微动效。
+2.  **内容精简**:
+    - 移除了默认的示例博客，仅保留一份中文模板文章。
+    - 同步更新了“关于我”页面。
+3.  **本地化**:
+    - 导航栏、侧边栏、分页器及主要辅助文字均已中文化。
 
 ---
 
 ## 📖 文档中心
 
-为了方便学习与维护，我为你准备了以下详细指南：
-
-1.  📘 [**技术架构指南 (GUIDE.md)**](./GUIDE.md)：深入了解 Next.js + Supabase 的实现细节与代码结构。
-2.  🎨 [**个性化定制指南 (CUSTOMIZATION.md)**](./CUSTOMIZATION.md)：学习如何修改标题、作者信息、Logo 以及配色方案。
-3.  🚀 [**部署与运维指南 (DEPLOYMENT.md)**](./DEPLOYMENT.md)：详细说明本地运行、生产编译以及 Vercel 自动化部署流程。
-
----
-
-## ✨ 核心特性
-
-1.  **全栈内容管理**
-    - **混合取值逻辑**：同时支持本地 Markdown 文件与云端数据库内容。
-    - **Apple 风格编辑器**：支持在线撰写、实时预览并保存到 Supabase。
-2.  **优雅认证体系**
-    - 基于 Supabase Auth 的极简登录/登出。
-    - 服务端 Middleware 路由保护，确保编辑器安全性。
-3.  **高性能渲染**
-    - 针对动态内容优化，使用 `markdown-it` 实现精美的排版样式。
-    - 默认响应式设计，完美适配移动端。
-
-## 🚀 快速启动
-
-1.  **配置环境变量**: 将 `.env.local` 配置文件准备就绪（参考 `DEPLOYMENT.md`）。
-2.  **安装 & 运行**:
-    ```bash
-    pnpm install
-    pnpm dev
-    ```
+1.  📘 [**技术架构指南 (GUIDE.md)**](./GUIDE.md)：深入了解 Next.js + Supabase 的实现细节。
+2.  🎨 [**个性化定制指南 (CUSTOMIZATION.md)**](./CUSTOMIZATION.md)：学习如何进一步修改配置。
+3.  🚀 [**部署与运维指南 (DEPLOYMENT.md)**](./DEPLOYMENT.md)：本地运行与 Vercel 部署。
 
 ---
 
