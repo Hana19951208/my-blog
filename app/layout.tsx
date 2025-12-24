@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     url: './',
     siteName: siteMetadata.title,
     images: [siteMetadata.socialBanner],
-    locale: 'en_US',
+    locale: 'zh_CN',
     type: 'website',
   },
   alternates: {
@@ -72,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         sizes="76x76"
         href={`${basePath}/static/favicons/apple-touch-icon.png`}
       />
+      <link rel="icon" type="image/svg+xml" href={`${basePath}/static/images/logo.svg`} />
       <link
         rel="icon"
         type="image/png"
@@ -94,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="antialiased" suppressHydrationWarning>
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>

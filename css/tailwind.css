@@ -7,7 +7,8 @@
 /* Core theme configuration */
 @theme {
   /* Font families */
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  --font-sans:
+    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Colors */
@@ -36,6 +37,14 @@
   --color-gray-900: oklch(0.21 0.034 264.665);
   --color-gray-950: oklch(0.13 0.028 261.692);
 
+  /* Vibe-Vibe Brand Colors */
+  --color-brand-primary: #15a051;
+  /* rgb(21, 160, 81) */
+  --color-brand-secondary: #2eb3df;
+  /* rgb(46, 179, 223) */
+  --color-bg-soft: var(--color-gray-50);
+  /* Default soft bg, overridden in dark mode */
+
   /* Line heights */
   --line-height-11: 2.75rem;
   --line-height-12: 3rem;
@@ -57,6 +66,14 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  body {
+    @apply bg-[#F5F5F7] pl-[calc(100vw-100%)] text-zinc-900 transition-colors duration-300 selection:bg-black selection:text-white;
+  }
+
+  .dark body {
+    @apply bg-[#000000] text-zinc-100 selection:bg-white selection:text-black;
+  }
+
   *,
   ::after,
   ::before,
@@ -68,6 +85,7 @@
   a,
   button {
     outline-color: var(--color-primary-500);
+    @apply transition-all duration-200 active:scale-95;
   }
 
   a:focus-visible,
@@ -79,38 +97,63 @@
 }
 
 @layer utilities {
+  .glass {
+    @apply border border-white/20 bg-white/70 shadow-sm backdrop-blur-xl transition-all;
+  }
+
+  .dark .glass {
+    @apply border border-white/10 bg-black/70 shadow-lg backdrop-blur-xl;
+  }
+
+  .apple-card {
+    @apply rounded-3xl border border-white/20 bg-white/70 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:translate-y-[-2px] hover:shadow-xl;
+  }
+
+  .dark .apple-card {
+    @apply border border-white/10 bg-black/70 shadow-lg backdrop-blur-xl;
+  }
+
   .prose {
     & a {
-      color: var(--color-primary-500);
+      @apply font-medium decoration-zinc-300 underline-offset-4 transition-all hover:decoration-zinc-800;
+      color: inherit;
+
       &:hover {
-        color: var(--color-primary-600);
+        color: inherit;
       }
+
       & code {
         color: var(--color-primary-400);
       }
     }
+
     & :where(h1, h2) {
       font-weight: 700;
       letter-spacing: var(--tracking-tight);
     }
+
     & h3 {
       font-weight: 600;
     }
+
     & :where(code):not(pre code) {
-      color: var(--color-indigo-500);
+      @apply rounded border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-sm;
     }
   }
 
   .prose-invert {
     & a {
       color: var(--color-primary-500);
+
       &:hover {
         color: var(--color-primary-400);
       }
+
       & code {
         color: var(--color-primary-400);
       }
     }
+
     & :where(h1, h2, h3, h4, h5, h6) {
       color: var(--color-gray-100);
     }
@@ -142,8 +185,10 @@
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* https://stackoverflow.com/questions/61083813/how-to-avoid-internal-autofill-selected-style-to-be-applied */

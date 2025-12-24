@@ -4,12 +4,13 @@ import 'katex/dist/katex.css'
 import PageTitle from '@/components/PageTitle'
 import { components } from '@/components/MDXComponents'
 import { MDXLayoutRenderer } from 'pliny/mdx-components'
-import { sortPosts, coreContent, allCoreContent } from 'pliny/utils/contentlayer'
+import { sortPosts, coreContent, allCoreContent, CoreContent } from 'pliny/utils/contentlayer'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import type { Authors, Blog } from 'contentlayer/generated'
 import PostSimple from '@/layouts/PostSimple'
 import PostLayout from '@/layouts/PostLayout'
 import PostBanner from '@/layouts/PostBanner'
+import VibePostLayout from '@/layouts/VibePostLayout'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
@@ -22,11 +23,12 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
-const defaultLayout = 'PostLayout'
+const defaultLayout = 'VibePostLayout'
 const layouts = {
   PostSimple,
   PostLayout,
   PostBanner,
+  VibePostLayout,
 }
 
 export async function generateMetadata(props: {
@@ -36,7 +38,15 @@ export async function generateMetadata(props: {
   const slug = decodeURI(params.slug.join('/'))
 
   // 1. Try local
-  let post: any = allBlogs.find((p) => p.slug === slug)
+  let post:
+    | Blog
+    | (Partial<Blog> & {
+        date: string
+        images?: string | string[]
+        summary?: string
+        title: string
+      })
+    | undefined = allBlogs.find((p) => p.slug === slug)
 
   // 2. Try Supabase
   if (!post) {
@@ -144,14 +154,14 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
       name: dbPost.profiles?.username || dbPost.profiles?.email || 'Author',
       avatar: dbPost.profiles?.avatar_url || '/static/images/avatar.png',
       occupation: 'Writer',
-    } as any,
+    } as Authors,
   ]
 
   const renderedContent = md.render(dbPost.content || '')
   const Layout = layouts[defaultLayout]
 
   return (
-    <Layout content={mainContent as any} authorDetails={authorDetails}>
+    <Layout content={mainContent as unknown as CoreContent<Blog>} authorDetails={authorDetails}>
       <div
         className="prose dark:prose-invert max-w-none pb-8"
         dangerouslySetInnerHTML={{ __html: renderedContent }}
